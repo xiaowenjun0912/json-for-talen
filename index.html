@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        table{
+            width: 400px;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        th,td{
+
+            border: 1px  solid #000;
+            padding: 10px;
+        }
+
+        input{
+            display: block;
+            height:40px;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+    <input type="button" value="加载数据" id="btn">
+    <table>
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>成绩</th>
+            </tr>
+        </thead>
+        <tbody id="tb">
+        
+        <!-- 第一需要：有类似于这样我们写好的html结构，只要我们要用的时候拿过来就可以直接用
+             第二需要：里面的数据不要写死，而是我到时候给你什么数据，你就显示什么数据
+
+             可以，需要模板！
+        -->
+ 
+       
+        </tbody>
+    </table>
+</body>
+</html>
+
+<script src="template-web.js"></script>
+
+<!-- 准备一个模板 -->
+<script type="text/html" id="tpl">
+   
+    <tr>
+        <td><%= Id %></td>
+        <td><%= name %></td>
+        <td><%= age %></td>
+        <td><%= score %></td>
+    </tr>
+
+</script>
+
+<script>
+
+    //找到tbody
+    var tb = document.getElementById('tb');
+
+    document.getElementById('btn').onclick = function(){
+
+        //1.创建请求对象
+        var xhr = new XMLHttpRequest();
+
+        //2.请求行
+        xhr.open('get','data.php');
+
+        //3.发送（请求体）
+        xhr.send();
+
+        xhr.onreadystatechange = function(){
+
+            if(xhr.readyState == 4 && xhr.status == 200){
+
+                //转换成JS能认识的东西
+                var arr = JSON.parse(xhr.responseText);
+                
+                //arr是拿到的响应体，它有多少个元素就要有多少个tr
+                // console.log(arr);
+
+                for(var i = 0; i < arr.length; i++){
+
+                    //读取模板
+                    var html = template('tpl',arr[i]);
+                    
+                    tb.innerHTML += html;
+                }
+                
+            }
+        }   
+    };
+</script>
